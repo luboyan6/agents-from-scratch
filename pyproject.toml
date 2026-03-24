@@ -1,11 +1,127 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "agents-from-scratch"
 version = "0.1.0"
-description = "Add your description here"
+description = "从零开始构建 AI Agent 框架"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
-    "openai>=2.29.0",
-    "python-dotenv>=1.2.2",
-    "rich>=14.3.3",
+    # 核心依赖
+    "openai>=1.0.0",
+    "requests>=2.25.0",
+    "python-dotenv>=0.19.0",
+    "pydantic>=2.0.0",
+
+    # 基础工具库
+    "numpy>=1.26.0",
+    "tiktoken>=0.5.0",
+    "networkx>=2.6.0",
+    "beautifulsoup4>=4.9.0",
 ]
+
+[project.optional-dependencies]
+# 搜索功能依赖
+search = [
+    "tavily-python>=0.7.12",
+    "google-search-results>=2.4.2",
+]
+
+# 记忆系统依赖
+memory = [
+    "qdrant-client>=1.9.0",
+    "neo4j>=5.0.0",
+    "spacy>=3.4.0",
+    "scikit-learn>=1.0.0",
+]
+
+# RAG系统依赖
+rag = [
+    "scikit-learn>=1.0.0",
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "sentence-transformers>=2.2.0",
+    "markitdown>=0.0.1",
+    "pypdf>=3.9.0",
+    "pdfminer.six>=20221105",
+]
+
+# 协议支持依赖
+protocols = [
+    "fastmcp>=2.0.0",
+]
+
+# 评估系统依赖
+evaluation = [
+    "datasets>=2.14.0",
+    "huggingface_hub>=0.20.0",
+    "evaluate>=0.4.0",
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "tqdm>=4.65.0",
+    "gradio>=4.0.0",
+]
+
+# RL训练系统依赖
+rl = [
+    "trl>=0.24.0",
+    "transformers>=4.20.0",
+    "torch>=2.0.0",
+    "datasets>=2.14.0",
+    "accelerate>=0.20.0",
+    "peft>=0.5.0",
+    "bitsandbytes>=0.41.0",
+    "wandb>=0.15.0",
+    "tensorboard>=2.13.0",
+]
+
+# 通义千问嵌入支持
+dashscope = [
+    "dashscope>=1.14.0",
+]
+
+# 核心功能（最小安装）
+core = [
+    "numpy>=1.26.0",
+    "tiktoken>=0.5.0",
+    "requests>=2.25.0",
+]
+
+# 完整安装（不含 RL 和评估）
+full = [
+    "agents-from-scratch[core,memory,rag,protocols,dashscope]",
+]
+
+# 全部功能
+all = [
+    "agents-from-scratch[core,memory,rag,protocols,evaluation,rl,dashscope,search]",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["open_agents*"]
+exclude = ["tests*", "examples*", "docs*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
